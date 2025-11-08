@@ -178,8 +178,7 @@
             }
         });
 
-        \
-for (let r = 0; r < rows; r++) {
+        for (let r = 0; r < rows; r++) {
             const tMin = startMin + r * slotMin;
             const slot = document.createElement("div");
             slot.className = "ctt-time-slot";
