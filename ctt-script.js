@@ -198,16 +198,21 @@ for (let r = 0; r < rows; r++) {
         // TRACK GRID
         const trackGrid = root.querySelector(".ctt-track-grid");
         trackGrid.innerHTML = "";
-        trackGrid.style.minHeight = `${rows * rowHeight}px`;
+
+        // Calculate total dynamic height (sum of all slot heights)
+        const totalDynamicHeight = acc; // acc is the accumulated height from slot calculation
+        trackGrid.style.minHeight = `${totalDynamicHeight}px`;
         trackGrid.style.position = "relative";
 
-        // Row guides
+        // Row guides - each guide should match its slot's dynamic height
         const guides = document.createElement("div");
         guides.className = "ctt-row-guides";
-        guides.style.height = `${rows * rowHeight}px`;
+        guides.style.height = `${totalDynamicHeight}px`;
         for (let r = 0; r < rows; r++) {
+            const tMin = startMin + r * slotMin;
             const guide = document.createElement("div");
             guide.className = "ctt-row-guide";
+            guide.style.height = `${slotHeights[tMin] || rowHeight}px`;
             guides.appendChild(guide);
         }
         trackGrid.appendChild(guides);
@@ -238,7 +243,7 @@ for (let r = 0; r < rows; r++) {
             infoDiv.style.height = `${customHeight}px`; // Custom height
             infoDiv.style.backgroundColor = block.bg_color || "#f0f4f8";
             infoDiv.style.color = block.text_color || "#1e293b";
-            infoDiv.style.zIndex = "999"; // LOWER z-index - below events
+            infoDiv.style.zIndex = "1000"; // HIGH z-index - Info Boxes appear above events
             infoDiv.style.pointerEvents = "none"; // Can't interact with info blocks
 
             let innerHTML = block.title || "";
@@ -296,11 +301,12 @@ for (let r = 0; r < rows; r++) {
 
     function computeWindowFromEvents(data) {
         const events = data.events || [];
+        const infoBlocks = data.info_blocks || [];
         const slotMin = getSlotMin();
 
-        // Only use events for window calculation, NOT info blocks
-        // This ensures info blocks don't interfere with the time range
-        if (events.length) {
+        // Include BOTH events AND info blocks in window calculation
+        // This ensures info blocks are visible even if before first event
+        if (events.length || infoBlocks.length) {
             let minStart = Infinity;
             let maxEnd = -Infinity;
 
@@ -309,6 +315,18 @@ for (let r = 0; r < rows; r++) {
                 const e = toMin(event.end || "00:00");
                 if (!isNaN(s)) minStart = Math.min(minStart, s);
                 if (!isNaN(e)) maxEnd   = Math.max(maxEnd, e);
+            });
+
+            infoBlocks.forEach(block => {
+                const pos = toMin(block.position || "00:00");
+                if (!isNaN(pos)) {
+                    minStart = Math.min(minStart, pos);
+                    // Info blocks contribute to the timeline but don't extend maxEnd
+                    // unless they're the only content
+                    if (events.length === 0) {
+                        maxEnd = Math.max(maxEnd, pos + slotMin);
+                    }
+                }
             });
 
             if (isFinite(minStart) && isFinite(maxEnd) && maxEnd > minStart) {
