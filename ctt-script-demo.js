@@ -129,7 +129,7 @@
             const pos = toMin(block.position || "00:00");
             if (pos < startMin || pos > endMin) return;
             const snapped = roundDownToSlot(pos, slotMin);
-            const h = (parseInt(block.height) || 60) + 8; // include gap
+            const h = parseInt(block.height) || 60;
             reservedBySlot[snapped] = Math.max(reservedBySlot[snapped] || 0, h);
         });
 
@@ -139,7 +139,7 @@
         let acc = 0;
         slotList.forEach((min, idx) => {
             const reserved = reservedBySlot[min] || 0;
-            const h = baseRowHeight + reserved;   // grow row by reserved amount
+            const h = Math.max(baseRowHeight, reserved);   // use max of base height or reserved height
             slotHeights[min] = h;
             cumulativeTop[min] = acc;
             acc += h;
