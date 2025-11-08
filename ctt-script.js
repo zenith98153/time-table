@@ -148,7 +148,7 @@
         let acc = 0;
         slotList.forEach((min, idx) => {
             const reserved = reservedBySlot[min] || 0;
-            const h = baseRowHeight + reserved;   // grow row by reserved amount
+            const h = Math.max(baseRowHeight, reserved);   // use max of base height or reserved height
             slotHeights[min] = h;
             cumulativeTop[min] = acc;
             acc += h;
