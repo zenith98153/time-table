@@ -81,6 +81,7 @@
     font-size: 12px; font-weight: 600; color: var(--text-light);
     border-bottom: 1px solid #e2e8f0;
     padding: 4px; text-align: center; line-height: 1.2;
+    box-sizing: border-box; /* Include padding in height calculation */
 }
 .ctt-time-slot.has-info-label {
     font-size: 11px; font-weight: 700; color: var(--primary-dark);
