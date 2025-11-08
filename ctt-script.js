@@ -138,7 +138,7 @@
             const pos = toMin(block.position || "00:00");
             if (pos < startMin || pos > endMin) return;
             const snapped = roundDownToSlot(pos, slotMin);
-            const h = (parseInt(block.height) || 60) + 8; // include gap
+            const h = parseInt(block.height) || 60;
             reservedBySlot[snapped] = Math.max(reservedBySlot[snapped] || 0, h);
         });
 
