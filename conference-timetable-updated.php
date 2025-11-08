@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conference Timetable (6 Tracks)
  * Description: Time-scaled timetable with 6 parallel tracks per day. Click events to view details in a centered modal. Shortcode: [ctt_timetable date="YYYY-MM-DD" start="09:00" end="18:00" slot="30"].
- * Version: 2.0.1
+ * Version: 2.0.2
  * Author: You
  * License: GPL2+
  */
@@ -312,8 +312,8 @@ class CTT_Plugin {
     public function enqueue_assets() {
         if (!has_shortcode(get_post()->post_content ?? '', 'ctt_timetable')) return;
 
-        wp_enqueue_style('ctt-styles', plugins_url('ctt-styles.css', __FILE__), [], '2.0.1');
-        wp_enqueue_script('ctt-script', plugins_url('ctt-script.js', __FILE__), [], '2.0.1', true);
+        wp_enqueue_style('ctt-styles', plugins_url('ctt-styles.css', __FILE__), [], '2.0.2');
+        wp_enqueue_script('ctt-script', plugins_url('ctt-script.js', __FILE__), [], '2.0.2', true);
         
         wp_localize_script('ctt-script', 'CTT', [
             'rest'  => rest_url(self::NS . '/events'),
